@@ -1,35 +1,43 @@
 import { keys } from "./input.js";
 import { platforms } from "../entities/platform.js";
-import { isColliding } from "./collision.js";
+import { resolveYCollision } from "./collision.js";
 
 export function updatePlayer(player, state) {
-    const gravity = -0.02;
-    const jumpPower = 0.35;
-    const speed = 0.1;
+    const speed = 0.12;
+    const gravity = -0.015;
+    const jumpForce = 0.32;
+    const coyoteMax = 8;
 
-    // Movement
-    if (keys.KeyA || keys.ArrowLeft) player.position.x -= speed;
-    if (keys.KeyD || keys.ArrowRight) player.position.x += speed;
-    if (keys.KeyW || keys.ArrowUp) player.position.z -= speed;
-    if (keys.KeyS || keys.ArrowDown) player.position.z += speed;
+    // Horizontal movement
+    if (keys.KeyA) player.position.x -= speed;
+    if (keys.KeyD) player.position.x += speed;
+    if (keys.KeyW) player.position.z -= speed;
+    if (keys.KeyS) player.position.z += speed;
 
     // Gravity
-    state.velocityY += gravity;
-    player.position.y += state.velocityY;
-    state.onGround = false;
+    state.velocity.y += gravity;
+    player.position.y += state.velocity.y;
 
-    // Platform collisions
+    let grounded = false;
+
     for (const p of platforms) {
-        if (isColliding(player, p) && state.velocityY <= 0) {
-            player.position.y = p.position.y + 1;
-            state.velocityY = 0;
-            state.onGround = true;
+        if (resolveYCollision(player, p)) {
+            state.velocity.y = 0;
+            grounded = true;
         }
     }
 
-    // Jump
-    if (keys.Space && state.onGround) {
-        state.velocityY = jumpPower;
+    if (grounded) {
+        state.onGround = true;
+        state.coyoteTime = coyoteMax;
+    } else {
         state.onGround = false;
+        state.coyoteTime--;
+    }
+
+    // Jump with forgiveness
+    if (keys.Space && state.coyoteTime > 0) {
+        state.velocity.y = jumpForce;
+        state.coyoteTime = 0;
     }
 }
