@@ -5,6 +5,7 @@ import "./core/lights.js";
 
 import { player, playerState } from "./entities/player.js";
 import "./entities/platform.js";
+import "./entities/world.js";
 
 import { updatePlayer } from "./systems/physics.js";
 import { enableCameraControls } from "./systems/cameraControls.js";
