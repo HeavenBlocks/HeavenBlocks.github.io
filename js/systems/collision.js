@@ -1,16 +1,13 @@
-export function resolveYCollision(player, platform) {
+export function resolveYCollision(player, collider) {
     const pBox = new THREE.Box3().setFromObject(player);
-    const oBox = new THREE.Box3().setFromObject(platform);
+    const cBox = new THREE.Box3().setFromObject(collider);
 
-    if (!pBox.intersectsBox(oBox)) return false;
+    if (!pBox.intersectsBox(cBox)) return false;
 
-    const penetration =
-        pBox.max.y - oBox.min.y;
-
-    if (penetration > 0 && penetration < 1) {
-        player.position.y -= penetration;
+    const overlapY = pBox.max.y - cBox.min.y;
+    if (overlapY > 0 && overlapY < 1.2) {
+        player.position.y -= overlapY;
         return true;
     }
-
     return false;
 }
