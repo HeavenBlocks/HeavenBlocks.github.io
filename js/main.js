@@ -7,18 +7,15 @@ import { player, playerState } from "./entities/player.js";
 import "./entities/platform.js";
 
 import { updatePlayer } from "./systems/physics.js";
+import { enableCameraControls } from "./systems/cameraControls.js";
+
+const updateCamera = enableCameraControls(camera, player);
 
 function animate() {
     requestAnimationFrame(animate);
 
     updatePlayer(player, playerState);
-
-    camera.position.set(
-        player.position.x,
-        player.position.y + 4,
-        player.position.z + 6
-    );
-    camera.lookAt(player.position);
+    updateCamera();
 
     renderer.render(scene, camera);
 }
