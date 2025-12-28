@@ -2,8 +2,8 @@ import { scene } from "../core/scene.js";
 
 const loader = new THREE.TextureLoader();
 
-const faceTexture = loader.load(
-    "https://cdn.jsdelivr.net/gh/HeavenBlocks/heavenblocks.github.io/pngs/face.png"
+const faceTexture = loader.load("./pngs/face.png");
+
 );
 
 const materials = [
